@@ -40,13 +40,15 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
 
-      - name: Build Frontend Docker Image
-        run: docker build -t xdn73/frontend:latest -t xdn73/frontend:${{ github.sha }} ./frontend
-
-      - name: Push Frontend Docker Image to Docker Hub
+      - name: Build and Push Frontend Docker Image
         run: |
-          docker pull xdn73/frontend:latest
-#edit here
+          docker build -t xdn73/frontend:latest -t xdn73/frontend:${{ github.sha }} ./frontend
+          docker push xdn73/frontend:latest
+          docker push xdn73/frontend:${{ github.sha }}
+          
+      - name: Confirm OS (Linux)
+        run: echo "Deploying to Linux Web App"
+
       - name: Deploy Frontend to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
