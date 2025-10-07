@@ -47,7 +47,7 @@ jobs:
         run: |
           docker push xdn73/frontend:latest
           docker push xdn73/frontend:${{ github.sha }}
-# updated for Azure Web App deployment
+
       - name: Deploy Frontend to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
