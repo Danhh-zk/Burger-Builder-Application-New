@@ -45,13 +45,12 @@ jobs:
 
       - name: Push Frontend Docker Image to Docker Hub
         run: |
-          docker xdn73/frontend:latest
-          docker push xdn73/frontend:${{ github.sha }}
+          run: docker pull xdn73/frontend:latest
 
       - name: Deploy Frontend to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
           app-name: g5-frontend-app  
-          images: "frontend:latest"
+          images: xdn73/frontend:latest
           publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE_FRONTEND }}
 
