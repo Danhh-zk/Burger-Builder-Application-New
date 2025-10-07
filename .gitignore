@@ -27,4 +27,5 @@ yarn-error.log*
 **/**/*.tfstate
 **/**/target/
 
-.env
+# terraform file
+.terraform*
