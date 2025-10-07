@@ -55,19 +55,22 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      # Build Backend Docker Image
       - name: Build Backend Docker Image
-        run: docker build -t backend:latest -t backend:${{ github.sha }} ./backend
+        run: docker build -t xdn73/backend:latest -t xdn73/backend:${{ github.sha }} ./backend
 
+      # Push Backend Docker Image to Docker Hub
       - name: Push Backend Docker Image to Docker Hub
         run: |
-          docker push backend:latest
-          docker push backend:${{ github.sha }}
+          docker push xdn73/backend:latest
+          docker push xdn73/backend:${{ github.sha }}
 
+      # Deploy Backend to Azure Web App
       - name: Deploy Backend to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
           app-name: g5-backend-app
-          images: "backend:latest"
+          images: "xdn73/backend:latest"
           publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
         env:
           DB_HOST: ${{ secrets.AZURE_DB_HOST }}
