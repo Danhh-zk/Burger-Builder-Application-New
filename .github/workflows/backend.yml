@@ -79,3 +79,5 @@ jobs:
           DB_USERNAME: ${{ secrets.AZURE_DB_USER }}
           DB_PASSWORD: ${{ secrets.AZURE_DB_PASSWORD }}
           SPRING_PROFILES_ACTIVE: azure
+
+          
