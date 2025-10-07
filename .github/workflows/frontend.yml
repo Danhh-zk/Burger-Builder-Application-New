@@ -45,8 +45,8 @@ jobs:
 
       - name: Push Frontend Docker Image to Docker Hub
         run: |
-          run: docker pull xdn73/frontend:latest
-
+          docker pull xdn73/frontend:latest
+#edit here
       - name: Deploy Frontend to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
