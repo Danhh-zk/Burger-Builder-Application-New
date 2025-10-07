@@ -52,6 +52,6 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: g5-frontend-app  
-          images: "xdn73/frontend:latest"
+          images: xdn73/frontend:latest
           publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE_FRONTEND }}
 
