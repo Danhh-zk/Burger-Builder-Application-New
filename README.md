@@ -57,13 +57,48 @@ Re-run `terraform apply` whenever infrastructure changes are committed. The remo
 
 ## How to Deploy (GitHub Actions)
 
-Three workflows under `.github/workflows/`:
+### 1. **Infrastructure Setup (`infra.yml`)**
 
-| Workflow       | Trigger                  | Purpose                                              | Required Secrets                          |
-| -------------- | ------------------------ | ---------------------------------------------------- | ----------------------------------------- |
-| `infra.yml`    | Push to `main` or manual | Runs Terraform to provision infrastructure           | `AZURE_CREDENTIALS`, `SQL_ADMIN_PASSWORD` |
-| `backend.yml`  | Push to `main` or manual | Builds & pushes backend image to Docker Hub          | `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`   |
-| `frontend.yml` | Push to `main` or manual | Builds & pushes frontend image (injects backend URL) | `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`   |
+- **Trigger**: This workflow runs when there is a push to the `main` branch or can be triggered manually.
+- **Function**: 
+  - Provisions the necessary infrastructure using Terraform.
+  - Sets up the cloud resources required for the application.
+  
+- **Required Secrets**:
+  - `AZURE_CREDENTIALS`: Azure service principal credentials for authentication.
+  - `SQL_ADMIN_PASSWORD`: Password for the SQL database administrator account.
+
+### 2. **Backend Deployment (`backend.yml`)**
+
+- **Trigger**: This workflow is triggered when changes are pushed to the `main` branch or manually.
+- **Function**:
+  - Builds the backend Docker image and pushes it to Docker Hub for deployment.
+  
+- **Required Secrets**:
+  - `DOCKERHUB_USERNAME`: Docker Hub username for authentication.
+  - `DOCKERHUB_TOKEN`: Docker Hub access token.
+
+### 3. **Frontend Deployment (`frontend.yml`)**
+
+- **Trigger**: This workflow is triggered by a push to the `main` branch or manually.
+- **Function**:
+  - Builds the frontend Docker image and pushes it to Docker Hub.
+  - Injects the backend URL into the frontend for proper interaction between the services.
+
+- **Required Secrets**:
+  - `DOCKERHUB_USERNAME`: Docker Hub username.
+  - `DOCKERHUB_TOKEN`: Docker Hub access token.
+
+**Secrets Configuration**
+
+For these workflows to run successfully, make sure to configure the following secrets in your GitHub repository under **Settings > Secrets**:
+- `DOCKERHUB_USERNAME`: Docker Hub username.
+- `DOCKERHUB_TOKEN`: Docker Hub access token.
+
+**Triggering the Workflows**
+
+- **Automatic Trigger**: Each workflow is automatically triggered on every push to the `main` branch.
+- **Manual Trigger**: You can also trigger any of the workflows manually from the **Actions** tab on GitHub.
 
 
 ## How to Validate (Private Environment)
