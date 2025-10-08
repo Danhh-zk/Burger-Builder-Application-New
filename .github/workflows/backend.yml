@@ -1,4 +1,4 @@
-name: CI/CD - Backend
+name: CI/CD for Backend
 
 on:
   push:
@@ -12,11 +12,11 @@ jobs:
   ci-cd-backend:
     runs-on: ubuntu-latest
     steps:
-      # Checkout repository
+      
       - name: Checkout the repository
         uses: actions/checkout@v4
 
-      # Setup Java for Backend (Maven-Java REST API)
+     
       - name: Set up JDK 17 for Backend
         uses: actions/setup-java@v3
         with:
@@ -25,31 +25,31 @@ jobs:
           java-package: jdk
           check-latest: false
 
-      # Install Backend Dependencies (Maven)
+     
       - name: Install Backend Dependencies
         run: mvn install -f ./backend/pom.xml
 
-      # Build Backend (Maven)
+      
       - name: Build Backend
         run: mvn clean package -f ./backend/pom.xml
 
-      # Run Backend Tests
+     
       - name: Run Backend Tests
         run: mvn test -f ./backend/pom.xml
 
-      # Docker login for Backend
+    
       - name: Login to Docker Hub for Backend
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Build and Push Backend Docker Image with v3 tag
+      #
       - name: Build and Push Backend Docker Image
         run: |
           docker pull xdn73/backend:v3
 
-      # Deploy Backend to Azure Web App
+     
       - name: Deploy Backend to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
