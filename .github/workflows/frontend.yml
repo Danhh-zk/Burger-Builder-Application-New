@@ -42,10 +42,10 @@ jobs:
 
       - name: Build and Push Frontend Docker Image
         run: |
-          docker build -t xdn73/frontend:latest -t xdn73/frontend:${{ github.sha }} ./frontend
-          docker push xdn73/frontend:latest
+          docker build -t xdn73/frontend:v3 -t xdn73/frontend:${{ github.sha }} ./frontend
+          docker push xdn73/frontend:v3
           docker push xdn73/frontend:${{ github.sha }}
-          
+
       - name: Confirm OS (Linux)
         run: echo "Deploying to Linux Web App"
 
@@ -53,6 +53,6 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: g5-frontend-app  
-          images: xdn73/frontend:latest
+          images: xdn73/frontend:v3
           publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE_FRONTEND }}
 
