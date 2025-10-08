@@ -34,6 +34,7 @@ jobs:
 
       - name: push Frontend Docker Image
         run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME}}/frontend:v3 ./frontend
           docker push xdn73/frontend:v3
 
 
