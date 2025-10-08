@@ -1,4 +1,4 @@
-name: "Terraform CI/CD Pipeline"
+name: Terraform CI/CD Pipeline
 
 on:
   push:
@@ -22,12 +22,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      
       - name: Azure Login (Service Principal)
         uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -39,6 +37,10 @@ jobs:
 
       - name: Terraform Validate
         run: terraform validate
+
+      - name: Terraform Import RG if exists
+        run: |
+          terraform import azurerm_resource_group.rg /subscriptions/80646857-9142-494b-90c5-32fea6acbc41/resourceGroups/team5-rg || echo "Resource already managed"
 
       - name: Terraform Plan
         run: terraform plan
