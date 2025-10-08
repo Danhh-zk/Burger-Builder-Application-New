@@ -32,8 +32,8 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Pull Frontend Docker Image
+      - name: push Frontend Docker Image
         run: |
-          docker pull xdn73/frontend:v3
+          docker push xdn73/frontend:v3
 
 
