@@ -9,58 +9,48 @@ on:
       - main
 
 jobs:
-  backend-ci:
+  ci-cd-backend:
     runs-on: ubuntu-latest
     steps:
+      # Checkout repository
       - name: Checkout the repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17
+      # Setup Java for Backend
+      - name: Set up JDK 17 for Backend
         uses: actions/setup-java@v3
         with:
           java-version: '17'
-          distribution: 'zulu'  
+          distribution: 'zulu'
           java-package: jdk
           check-latest: false
 
-      - name: Install Maven Dependencies (Backend)
+      # Install Backend Dependencies (Maven)
+      - name: Install Backend Dependencies
         run: mvn install -f ./backend/pom.xml
 
-      - name: Build Backend (Maven)
+      # Build Backend (Maven)
+      - name: Build Backend
         run: mvn clean package -f ./backend/pom.xml
 
+      # Run Backend Tests
       - name: Run Backend Tests
         run: mvn test -f ./backend/pom.xml
 
-  backend-cd:
-    runs-on: ubuntu-latest
-    needs: backend-ci
-    steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v4
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'zulu'  
-          java-package: jdk
-          check-latest: false
-
-      - name: Login to Docker Hub
+      # Docker login for Backend
+      - name: Login to Docker Hub for Backend
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build Backend Docker Image
-        run: docker build -t xdn73/backend:v3 -t xdn73/backend:${{ github.sha }} ./backend
-
-      - name: Push Backend Docker Image to Docker Hub
+      # Build and Push Backend Docker Image
+      - name: Build and Push Backend Docker Image
         run: |
-          docker push xdn73/backend:latest
-          docker push xdn73/backend:${{ github.sha }}
+          docker build -t xdn73/backend:v3 -t xdn73/backend:v3 ./backend
+          docker push xdn73/backend:v3
 
+      # Deploy Backend to Azure Web App
       - name: Deploy Backend to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
@@ -74,5 +64,3 @@ jobs:
           DB_USERNAME: ${{ secrets.AZURE_DB_USER }}
           DB_PASSWORD: ${{ secrets.AZURE_DB_PASSWORD }}
           SPRING_PROFILES_ACTIVE: azure
-
-          
