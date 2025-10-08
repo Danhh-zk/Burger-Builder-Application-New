@@ -12,38 +12,58 @@ jobs:
   ci-cd-frontend:
     runs-on: ubuntu-latest
     steps:
-      # Checkout repository
+ 
       - name: Checkout the repository
         uses: actions/checkout@v4
 
-      # Install Frontend Dependencies
       - name: Install Frontend Dependencies
         run: npm install --prefix ./frontend
 
-      # Build Frontend (React + Vite)
+
       - name: Build Frontend
         run: npm run build --prefix ./frontend
 
-      # Run Frontend Tests
       - name: Run Frontend Tests
         run: npm run test --prefix ./frontend
 
-      # Docker login for Frontend
       - name: Login to Docker Hub for Frontend
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and Push Frontend Docker Image
+      - name: Pull Frontend Docker Image
         run: |
           docker pull xdn73/frontend:v3
 
+   
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # Deploy Frontend to Azure Web App
+   
+      - name: Configure Web App to use Docker
+        run: |
+          echo "🔧 Configuring Web App to use Docker image..."
+          az webapp config appsettings set \
+            -g "${{ env.AZURE_RESOURCE_GROUP }}" \
+            -n "${{ env.AZURE_WEBAPP_NAME }}" \
+            --settings WEBSITES_PORT=${{ env.APP_PORT }} \
+                       DOCKER_REGISTRY_SERVER_URL=https://index.docker.io/v1/
+
+          az webapp config container set \
+            -g "${{ env.AZURE_RESOURCE_GROUP }}" \
+            -n "${{ env.AZURE_WEBAPP_NAME }}" \
+            --container-image-name "${{ env.IMAGE_NAME }}:v3" \
+            --container-registry-url "https://index.docker.io"
+
+          echo "Restarting Web App..."
+          az webapp restart -g "${{ env.AZURE_RESOURCE_GROUP }}" -n "${{ env.AZURE_WEBAPP_NAME }}"
+
       - name: Deploy Frontend to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
-          app-name: g5-frontend-app
-          images: xdn73/frontend:v3
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          images: ${{ env.IMAGE_NAME }}:v3
           publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE_FRONTEND }}
