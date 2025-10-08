@@ -35,10 +35,16 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Build and Push Frontend Docker Image with v3 tag
       - name: Build and Push Frontend Docker Image
         run: |
-          docker pull xdn73/frontend:v3
+          docker build \
+             --build-arg VITE_API_BASE_URL=${{ secrets.API_BASE_URL }} \
+             -t xdn73/frontend:v3 \
+             -t xdn73/frontend:${{ github.sha }} \
+             ./frontend
+          docker push xdn73/frontend:v3
+          docker push xdn73/frontend:${{ github.sha }}
+
 
       # Deploy Frontend to Azure Web App
       - name: Deploy Frontend to Azure Web App
