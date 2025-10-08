@@ -1,62 +1,47 @@
-name: Terraform CD - Azure Infra
+name: "Terraform CI/CD Pipeline"
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:  
-
-permissions:
-  id-token: write
-  contents: read
-
-env:
-  TF_VERSION: 1.9.6
-  AZURE_RESOURCE_GROUP: MyResourceGroup
-  AZURE_STORAGE_ACCOUNT: mystorageaccount
-  AZURE_CONTAINER_NAME: terraform-state
-  TF_STATE_FILE: terraform.tfstate
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
   terraform:
-    name: Deploy Infrastructure
+    name: Terraform Pipeline
     runs-on: ubuntu-latest
 
+    env:
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+
+    defaults:
+      run:
+        working-directory: terraform
+
     steps:
-      # 1️⃣ سحب الكود من الريبو
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ تثبيت تيرافورم
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: ${{ env.TF_VERSION }}
+          terraform_version: latest
 
-      
-      - name: Azure Login
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-     
       - name: Terraform Init
-        run: terraform init \
-          -backend-config="resource_group_name=${{ env.AZURE_RESOURCE_GROUP }}" \
-          -backend-config="storage_account_name=${{ env.AZURE_STORAGE_ACCOUNT }}" \
-          -backend-config="container_name=${{ env.AZURE_CONTAINER_NAME }}" \
-          -backend-config="key=${{ env.TF_STATE_FILE }}"
+        run: terraform init
 
-      
       - name: Terraform Validate
         run: terraform validate
 
-     
       - name: Terraform Plan
-        run: terraform plan -out=tfplan
+        run: terraform plan
 
-     
       - name: Terraform Apply
-        run: terraform apply -auto-approve tfplan
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: terraform apply -auto-approve
