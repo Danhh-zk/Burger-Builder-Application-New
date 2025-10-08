@@ -47,7 +47,8 @@ jobs:
       # Build and Push Backend Docker Image with v3 tag
       - name: Build and Push Backend Docker Image
         run: |
-          docker pull xdn73/backend:v3
+          docker push xdn73/backend:v3
+          docker push xdn73/backend:${{ github.sha }}
 
       # Deploy Backend to Azure Web App
       - name: Deploy Backend to Azure Web App
