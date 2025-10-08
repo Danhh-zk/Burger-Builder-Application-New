@@ -45,21 +45,9 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       #
-      - name: Build and Push Backend Docker Image
+      - name: Push Backend Docker Image
         run: |
-          docker pull xdn73/backend:v3
+          docker build -t ${{ secrets.DOCKER_USERNAME}}/backend:v3 ./backend
+          docker push xdn73/backend:v3
 
      
-      - name: Deploy Backend to Azure Web App
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: g5-backend-app
-          images: xdn73/backend:v3
-          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
-        env:
-          DB_HOST: ${{ secrets.AZURE_DB_HOST }}
-          DB_PORT: ${{ secrets.AZURE_DB_PORT }}
-          DB_NAME: ${{ secrets.AZURE_DB_NAME }}
-          DB_USERNAME: ${{ secrets.AZURE_DB_USER }}
-          DB_PASSWORD: ${{ secrets.AZURE_DB_PASSWORD }}
-          SPRING_PROFILES_ACTIVE: azure
