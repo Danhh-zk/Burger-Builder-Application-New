@@ -37,11 +37,6 @@ jobs:
 
       - name: Build and Push Frontend Docker Image
         run: |
-          docker build \
-             --build-arg VITE_API_BASE_URL=${{ secrets.API_BASE_URL }} \
-             -t xdn73/frontend:v3 \
-             -t xdn73/frontend:${{ github.sha }} \
-             ./frontend
           docker pull xdn73/frontend:v3
 
 
