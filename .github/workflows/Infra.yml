@@ -40,7 +40,16 @@ jobs:
 
       - name: Terraform Import RG if exists
         run: |
-          terraform import azurerm_resource_group.rg /subscriptions/80646857-9142-494b-90c5-32fea6acbc41/resourceGroups/team5-rg || echo "Resource already managed"
+          terraform import azurerm_resource_group.rg /subscriptions/80646857-9142-494b-90c5-32fea6acbc41/resourceGroups/team5-rg || echo "Resource Group already managed"
+
+      - name: Terraform Import Existing Resources
+        run: |
+          terraform import azurerm_service_plan.plan "/subscriptions/80646857-9142-494b-90c5-32fea6acbc41/resourceGroups/team5-rg/providers/Microsoft.Web/serverFarms/team5-plan" || echo "Service Plan already managed"
+          terraform import azurerm_public_ip.appgw_pip "/subscriptions/80646857-9142-494b-90c5-32fea6acbc41/resourceGroups/team5-rg/providers/Microsoft.Network/publicIPAddresses/team5-appgw-pip" || echo "Public IP already managed"
+          terraform import azurerm_virtual_network.vnet "/subscriptions/80646857-9142-494b-90c5-32fea6acbc41/resourceGroups/team5-rg/providers/Microsoft.Network/virtualNetworks/team5-vnet" || echo "VNet already managed"
+          terraform import azurerm_private_dns_zone.appservice_dns_zone "/subscriptions/80646857-9142-494b-90c5-32fea6acbc41/resourceGroups/team5-rg/providers/Microsoft.Network/privateDnsZones/privatelink.azurewebsites.net" || echo "App Service DNS Zone already managed"
+          terraform import azurerm_mssql_server.sql "/subscriptions/80646857-9142-494b-90c5-32fea6acbc41/resourceGroups/team5-rg/providers/Microsoft.Sql/servers/team5-sqlserver" || echo "SQL Server already managed"
+          terraform import azurerm_private_dns_zone.sql_dns_zone "/subscriptions/80646857-9142-494b-90c5-32fea6acbc41/resourceGroups/team5-rg/providers/Microsoft.Network/privateDnsZones/privatelink.database.windows.net" || echo "SQL DNS Zone already managed"
 
       - name: Terraform Plan
         run: terraform plan
