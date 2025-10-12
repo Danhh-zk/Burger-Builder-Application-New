@@ -1,4 +1,8 @@
-# App Gateway alart
+####################################################
+# Metric Alerts - App Gateway, Frontend, SQL DTU
+####################################################
+
+# App Gateway Backend Health Alert
 resource "azurerm_monitor_metric_alert" "app_gateway_backend_health" {
   name                = "appgw-backend-health-alert"
   resource_group_name = azurerm_resource_group.rg.name
@@ -17,7 +21,7 @@ resource "azurerm_monitor_metric_alert" "app_gateway_backend_health" {
   }
 }
 
-# Frontend Web App Alert
+# Frontend Web App Requests Alert
 resource "azurerm_monitor_metric_alert" "frontend_requests" {
   name                = "fe-requests-alert"
   resource_group_name = azurerm_resource_group.rg.name
@@ -36,7 +40,7 @@ resource "azurerm_monitor_metric_alert" "frontend_requests" {
   }
 }
 
-# SQL DTU Alert
+# SQL Database DTU Alert
 resource "azurerm_monitor_metric_alert" "sql_dtu" {
   name                = "sql-dtu-alert"
   resource_group_name = azurerm_resource_group.rg.name
