@@ -1,7 +1,7 @@
 resource "azurerm_monitor_metric_alert" "app_gateway_backend_health" {
   name                = "appgw-backend-health-alert"
-  resource_group_name = module.resource_group.name
-  scopes              = [module.app_gateway.app_gateway_id]
+  resource_group_name = "YOUR_RESOURCE_GROUP" # استبدلي باسم Resource Group عندك
+  scopes              = ["/subscriptions/YOUR_SUBSCRIPTION_ID/resourceGroups/YOUR_RESOURCE_GROUP/providers/Microsoft.Network/applicationGateways/YOUR_APP_GATEWAY"] # استبدلي بالـ ID الفعلي
   description         = "Alerts when the Application Gateway backend health drops below 100% for 5 minutes."
   severity            = 2
   frequency           = "PT1M"
@@ -18,8 +18,8 @@ resource "azurerm_monitor_metric_alert" "app_gateway_backend_health" {
 
 resource "azurerm_monitor_metric_alert" "frontend_requests" {
   name                = "fe-requests-alert"
-  resource_group_name = module.resource_group.name
-  scopes              = [module.webapp.frontend_id]
+  resource_group_name = "YOUR_RESOURCE_GROUP"
+  scopes              = ["/subscriptions/YOUR_SUBSCRIPTION_ID/resourceGroups/YOUR_RESOURCE_GROUP/providers/Microsoft.Web/sites/YOUR_WEB_APP"] # استبدلي بالـ ID الفعلي
   description         = "Alerts when frontend web app requests exceed threshold."
   severity            = 2
   frequency           = "PT1M"
@@ -36,8 +36,8 @@ resource "azurerm_monitor_metric_alert" "frontend_requests" {
 
 resource "azurerm_monitor_metric_alert" "sql_dtu" {
   name                = "sql-dtu-alert"
-  resource_group_name = module.resource_group.name
-  scopes              = [module.sql.sql_database_id]
+  resource_group_name = "YOUR_RESOURCE_GROUP"
+  scopes              = ["/subscriptions/YOUR_SUBSCRIPTION_ID/resourceGroups/YOUR_RESOURCE_GROUP/providers/Microsoft.Sql/servers/YOUR_SQL_SERVER/databases/YOUR_DATABASE"] # استبدلي بالـ ID الفعلي
   description         = "Alerts when SQL DTU usage exceeds 80% for 5 minutes."
   severity            = 2
   frequency           = "PT1M"
