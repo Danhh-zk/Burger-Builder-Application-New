@@ -1,6 +1,6 @@
 resource "azurerm_monitor_metric_alert" "app_gateway_backend_health" {
   name                = "appgw-backend-health-alert"
-  resource_group_name = "YOUR_RESOURCE_GROUP" # استبدلي باسم Resource Group عندك
+  resource_group_name = pro-ftoon2-rg
   scopes              = ["/subscriptions/YOUR_SUBSCRIPTION_ID/resourceGroups/YOUR_RESOURCE_GROUP/providers/Microsoft.Network/applicationGateways/YOUR_APP_GATEWAY"] # استبدلي بالـ ID الفعلي
   description         = "Alerts when the Application Gateway backend health drops below 100% for 5 minutes."
   severity            = 2
