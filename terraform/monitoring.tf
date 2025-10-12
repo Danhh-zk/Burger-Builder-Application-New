@@ -1,8 +1,8 @@
-# App Gateway Alert
+# App Gateway alart
 resource "azurerm_monitor_metric_alert" "app_gateway_backend_health" {
   name                = "appgw-backend-health-alert"
-  resource_group_name = "pro-ftoon2-rg"
-  scopes              = ["/subscriptions/<YOUR_SUBSCRIPTION_ID>/resourceGroups/pro-ftoon2-rg/providers/Microsoft.Network/applicationGateways/g5-appgw"]
+  resource_group_name = azurerm_resource_group.rg.name
+  scopes              = [azurerm_application_gateway.appgw.id]
   description         = "Alerts when the Application Gateway backend health drops below 100% for 5 minutes."
   severity            = 2
   frequency           = "PT1M"
@@ -17,11 +17,11 @@ resource "azurerm_monitor_metric_alert" "app_gateway_backend_health" {
   }
 }
 
-# Frontend App Alert
+# Frontend Web App Alert
 resource "azurerm_monitor_metric_alert" "frontend_requests" {
   name                = "fe-requests-alert"
-  resource_group_name = "pro-ftoon2-rg"
-  scopes              = ["/subscriptions/<YOUR_SUBSCRIPTION_ID>/resourceGroups/pro-ftoon2-rg/providers/Microsoft.Web/sites/g5-frontend-app"]
+  resource_group_name = azurerm_resource_group.rg.name
+  scopes              = [azurerm_linux_web_app.frontend.id]
   description         = "Alerts when frontend web app requests exceed threshold."
   severity            = 2
   frequency           = "PT1M"
@@ -39,8 +39,8 @@ resource "azurerm_monitor_metric_alert" "frontend_requests" {
 # SQL DTU Alert
 resource "azurerm_monitor_metric_alert" "sql_dtu" {
   name                = "sql-dtu-alert"
-  resource_group_name = "pro-ftoon2-rg"
-  scopes              = ["/subscriptions/<YOUR_SUBSCRIPTION_ID>/resourceGroups/pro-ftoon2-rg/providers/Microsoft.Sql/servers/g5-sql-server/databases/g5-sql-db"]
+  resource_group_name = azurerm_resource_group.rg.name
+  scopes              = [azurerm_mssql_server.sql.id]
   description         = "Alerts when SQL DTU usage exceeds 80% for 5 minutes."
   severity            = 2
   frequency           = "PT1M"
